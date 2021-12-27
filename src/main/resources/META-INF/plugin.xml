@@ -1,0 +1,14 @@
+<idea-plugin>
+    <id>org.strangeway.microservices.annotator</id>
+    <name>Microservices Call Annotator</name>
+    <vendor email="qa-lithium@strangeway.org" url="https://www.strangeway.org">Yuriy Artamonov</vendor>
+
+    <depends>com.intellij.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <intentionAction id="AnnotateMicroserviceCall">
+            <className>org.strangeway.msa.AnnotateMicroserviceCallIntention</className>
+            <category>Microservices</category>
+        </intentionAction>
+    </extensions>
+</idea-plugin>
