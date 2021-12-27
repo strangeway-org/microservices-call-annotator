@@ -14,9 +14,7 @@ internal class AnnotateMicroserviceCallIntention : IntentionAction, Iconable, Lo
   override fun startInWriteAction(): Boolean = false
 
   override fun getText(): String = "Mark microservice interaction method"
-
   override fun getFamilyName(): String = "Microservice annotator"
-
   override fun getIcon(flags: Int): Icon = MicroserviceIcons.INTENTION
 
   override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {

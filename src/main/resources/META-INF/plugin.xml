@@ -1,7 +1,8 @@
 <idea-plugin>
     <id>org.strangeway.microservices.annotator</id>
-    <name>Microservices Call Annotator</name>
-    <vendor email="qa-lithium@strangeway.org" url="https://www.strangeway.org">Yuriy Artamonov</vendor>
+    <name>Microservices Annotator</name>
+    <vendor email="github@strangeway.org" url="https://www.strangeway.org">Yuriy Artamonov</vendor>
+    <category>Microservices</category>
 
     <depends>com.intellij.java</depends>
 
