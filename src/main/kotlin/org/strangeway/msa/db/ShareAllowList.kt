@@ -1,13 +1,17 @@
 package org.strangeway.msa.db
 
-val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
+internal val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
+  "com.intellij.util",
+  "io.grpc",
+  "io.micronaut.",
+  "io.netty",
+  "io.quarkus.",
+  "io.smallrye.",
+  "io.vertx",
+  "jakarta.",
   "java.",
   "javax.",
-  "jakarta.",
-  "org.springframework.",
-  "io.micronaut.",
-  "org.eclipse.",
   "org.apache.",
-  "io.vertx",
-  "io.grpc"
+  "org.eclipse.",
+  "org.springframework."
 )
