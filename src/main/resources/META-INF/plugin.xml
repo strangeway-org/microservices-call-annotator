@@ -1,15 +1,58 @@
 <idea-plugin>
-    <id>org.strangeway.microservices.annotator</id>
+    <id>org.strangeway.msa</id>
     <name>Microservices Annotator</name>
     <vendor email="github@strangeway.org" url="https://www.strangeway.org">Yuriy Artamonov</vendor>
     <category>Microservices</category>
 
     <depends>com.intellij.java</depends>
 
+    <description><![CDATA[
+        <p>
+            Shows nice gutter icons for method calls that interact with network / database / file system in Java/Kotlin.
+            This helps to understand code of microservices and see all the interaction points.
+        </p>
+
+        <p>
+            Uses global database of JVM APIs that you can help to improve by using the special intention action:
+            <i>Alt-Enter - Mark microservice interaction method</i>.
+            <br/>
+            Updates database once a day by calling <a href="https://msa.strangeway.org">https://msa.strangeway.org</a>.
+        </p>
+
+        Special support provided for the following frameworks:
+        <ul>
+            <li>Spring Feign</li>
+            <li>Retrofit</li>
+            <li>Micronaut HTTP Client</li>
+            <li>MicroProfile Rest Client</li>
+        </ul>
+        ]]></description>
+
+    <extensionPoints>
+        <extensionPoint name="callDetector" dynamic="true"
+                        interface="org.strangeway.msa.frameworks.CallDetector"/>
+    </extensionPoints>
+
     <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="org.strangeway.msa.db.InteractionsUpdateStartupActivity"/>
+
+        <projectService serviceImplementation="org.strangeway.msa.db.ProjectInteractionsState"/>
+        <applicationService serviceImplementation="org.strangeway.msa.db.GlobalInteractionsState"/>
+
+        <codeInsight.lineMarkerProvider language="UAST"
+                                        implementationClass="org.strangeway.msa.MicroserviceCallLineMarkerProvider"/>
+
         <intentionAction id="AnnotateMicroserviceCall">
             <className>org.strangeway.msa.AnnotateMicroserviceCallIntention</className>
             <category>Microservices</category>
         </intentionAction>
+    </extensions>
+
+    <extensions defaultExtensionNs="org.strangeway.msa">
+        <callDetector implementation="org.strangeway.msa.frameworks.DbCallDetector"/>
+
+        <callDetector implementation="org.strangeway.msa.frameworks.MicronautHttpCallDetector"/>
+        <callDetector implementation="org.strangeway.msa.frameworks.SpringFeignCallDetector"/>
+        <callDetector implementation="org.strangeway.msa.frameworks.RetrofitCallDetector"/>
     </extensions>
 </idea-plugin>
