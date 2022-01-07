@@ -22,6 +22,7 @@ import org.strangeway.msa.db.getGlobalInteractionsService
 import org.strangeway.msa.db.getProjectInteractionsService
 import org.strangeway.msa.frameworks.CallDetector
 import org.strangeway.msa.frameworks.Interaction
+import org.strangeway.msa.frameworks.MappedInteraction
 import java.awt.event.MouseEvent
 import javax.swing.Icon
 
@@ -70,7 +71,7 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
 
     val actionGroup = DefaultActionGroup()
 
-    if (interaction.mapping != null) {
+    if (interaction is MappedInteraction) {
       actionGroup.add(object : AnAction(
         "Remove Mapping", "Remove interaction mapping from settings",
         AllIcons.Actions.DeleteTag

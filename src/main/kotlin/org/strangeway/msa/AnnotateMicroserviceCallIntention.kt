@@ -91,6 +91,7 @@ class AnnotateMicroserviceCallIntention : IntentionAction, Iconable, LowPriority
     val className = resolvedCall.containingClass?.qualifiedName ?: return
 
     val mapping = InteractionMapping(
+      JVM_LANGUAGE,
       className,
       resolvedCall.name,
       resolvedCall.parameterList.parametersCount,

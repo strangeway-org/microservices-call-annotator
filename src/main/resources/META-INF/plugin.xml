@@ -1,60 +1,68 @@
 <idea-plugin>
-    <id>org.strangeway.msa</id>
-    <name>Microservices Annotator</name>
-    <vendor email="github@strangeway.org" url="https://www.strangeway.org">Yuriy Artamonov</vendor>
-    <category>Microservices</category>
+  <id>org.strangeway.msa</id>
+  <name>Microservices Annotator</name>
+  <vendor email="github@strangeway.org" url="https://www.strangeway.org">Yuriy Artamonov</vendor>
+  <category>Microservices</category>
 
-    <depends>com.intellij.java</depends>
+  <depends>com.intellij.java</depends>
 
-    <description><![CDATA[
-        <p>
-            Shows nice gutter icons for method calls that interact with network / database / file system in Java/Kotlin.
-            This helps to understand code of microservices and see all the interaction points.
-        </p>
+  <description><![CDATA[
+    <p>
+      Shows nice gutter icons for method calls that interact with network / database / file system in Java/Kotlin.
+      This helps to understand code of microservices and see all the interaction points.
+    </p>
 
-        <p>
-            Uses global database of JVM APIs that you can help to improve by using the special intention action:
-            <i>Alt-Enter - Mark microservice interaction method</i>.
-            <br/>
-            Updates database once a day by calling <a href="https://msa.strangeway.org">https://msa.strangeway.org</a>.
-        </p>
+    <p>
+      Uses global database of JVM APIs that you can help to improve by using the special intention action:
+      <i>Alt-Enter - Mark microservice interaction method</i>.
+      <br/>
+      Updates database once a day by calling <a href="https://msa.strangeway.org">https://msa.strangeway.org</a>.
+    </p>
 
-        Special support provided for the following frameworks:
-        <ul>
-            <li>Spring Feign</li>
-            <li>Spring Data</li>
-            <li>Retrofit</li>
-            <li>Micronaut HTTP Client</li>
-            <li>Micronaut Data</li>
-            <li>MicroProfile Rest Client</li>
-        </ul>
-        ]]></description>
+    Special support provided for the following frameworks:
+    <ul>
+      <li>Spring Feign</li>
+      <li>Spring Data</li>
+      <li>Retrofit</li>
+      <li>Micronaut HTTP Client</li>
+      <li>Micronaut Data</li>
+      <li>MicroProfile Rest Client</li>
+      <li>JDBI</li>
+    </ul>
 
-    <extensionPoints>
-        <extensionPoint name="callDetector" dynamic="true"
-                        interface="org.strangeway.msa.frameworks.CallDetector"/>
-    </extensionPoints>
+    <p>
+      Some framework is missing? Want to use this for other languages?
+      Please open an <a href="https://github.com/strangeway-org/microservices-annotator-db/issues">issue</a>.
+    </p>
+    ]]></description>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="org.strangeway.msa.db.InteractionsUpdateStartupActivity"/>
+  <extensionPoints>
+    <extensionPoint name="callDetector" dynamic="true"
+                    interface="org.strangeway.msa.frameworks.CallDetector"/>
+  </extensionPoints>
 
-        <projectService serviceImplementation="org.strangeway.msa.db.ProjectInteractionsState"/>
-        <applicationService serviceImplementation="org.strangeway.msa.db.GlobalInteractionsState"/>
+  <extensions defaultExtensionNs="com.intellij">
+    <postStartupActivity implementation="org.strangeway.msa.db.InteractionsUpdateStartupActivity"/>
 
-        <codeInsight.lineMarkerProvider language="UAST"
-                                        implementationClass="org.strangeway.msa.MicroserviceCallLineMarkerProvider"/>
+    <projectService serviceImplementation="org.strangeway.msa.db.ProjectInteractionsState"/>
+    <applicationService serviceImplementation="org.strangeway.msa.db.GlobalInteractionsState"/>
 
-        <intentionAction id="AnnotateMicroserviceCall">
-            <className>org.strangeway.msa.AnnotateMicroserviceCallIntention</className>
-            <category>Microservices</category>
-        </intentionAction>
-    </extensions>
+    <codeInsight.lineMarkerProvider language="UAST"
+                                    implementationClass="org.strangeway.msa.MicroserviceCallLineMarkerProvider"/>
 
-    <extensions defaultExtensionNs="org.strangeway.msa">
-        <callDetector implementation="org.strangeway.msa.frameworks.DbCallDetector"/>
+    <intentionAction id="AnnotateMicroserviceCall">
+      <className>org.strangeway.msa.AnnotateMicroserviceCallIntention</className>
+      <category>Microservices</category>
+    </intentionAction>
+  </extensions>
 
-        <callDetector implementation="org.strangeway.msa.frameworks.MicronautHttpCallDetector"/>
-        <callDetector implementation="org.strangeway.msa.frameworks.SpringFeignCallDetector"/>
-        <callDetector implementation="org.strangeway.msa.frameworks.RetrofitCallDetector"/>
-    </extensions>
+  <extensions defaultExtensionNs="org.strangeway.msa">
+    <callDetector implementation="org.strangeway.msa.frameworks.DbCallDetector" order="first"/>
+
+    <callDetector implementation="org.strangeway.msa.frameworks.MicronautHttpCallDetector"/>
+    <callDetector implementation="org.strangeway.msa.frameworks.MicronautDataCallDetector"/>
+    <callDetector implementation="org.strangeway.msa.frameworks.SpringFeignCallDetector"/>
+    <callDetector implementation="org.strangeway.msa.frameworks.SpringDataCallDetector"/>
+    <callDetector implementation="org.strangeway.msa.frameworks.RetrofitCallDetector"/>
+  </extensions>
 </idea-plugin>

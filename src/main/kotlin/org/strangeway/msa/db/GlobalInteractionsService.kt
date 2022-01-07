@@ -4,7 +4,6 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.util.concurrency.annotations.RequiresBackgroundThread
-import com.intellij.util.concurrency.annotations.RequiresEdt
 import org.intellij.lang.annotations.Language
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
@@ -25,7 +24,6 @@ class GlobalInteractionsService : SimpleModificationTracker() {
 
   private val interactionsDb: MutableList<InteractionMapping> = mutableListOf()
 
-  @RequiresEdt
   fun suggestInteractionMapping(mapping: InteractionMapping) {
     lock.write {
       getState().addMapping(mapping)
@@ -35,6 +33,17 @@ class GlobalInteractionsService : SimpleModificationTracker() {
     }
 
     // todo send async request to web service
+
+    incModificationCount()
+  }
+
+  fun removeMapping(mapping: InteractionMapping) {
+    lock.write {
+      getState().removeMapping(mapping)
+
+      interactionsDb.clear()
+      initialized = false
+    }
 
     incModificationCount()
   }
@@ -81,17 +90,6 @@ class GlobalInteractionsService : SimpleModificationTracker() {
 
   private fun getState(): InteractionsState {
     return InteractionsState.getInstance()
-  }
-
-  fun removeMapping(mapping: InteractionMapping) {
-    lock.write {
-      getState().removeMapping(mapping)
-
-      interactionsDb.clear()
-      initialized = false
-    }
-
-    incModificationCount()
   }
 }
 

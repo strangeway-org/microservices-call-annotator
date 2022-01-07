@@ -30,7 +30,16 @@ interface CallDetector {
   }
 }
 
-data class Interaction(
-  val type: InteractionType,
-  val mapping: InteractionMapping?
-)
+sealed interface Interaction {
+  val type: InteractionType
+}
+
+data class MappedInteraction(
+  override val type: InteractionType,
+  val mapping: InteractionMapping
+) : Interaction
+
+data class FrameworkInteraction(
+  override val type: InteractionType,
+  val framework: String
+) : Interaction

@@ -58,6 +58,7 @@ class GlobalInteractionsState : InteractionsState()
 class ProjectInteractionsState : InteractionsState()
 
 open class InteractionState {
+  var language: String = ""
   var className: String = ""
   var methodName: String = ""
   var argsCount: Int = 0
@@ -72,12 +73,13 @@ fun equivalent(it: InteractionState, mapping: InteractionMapping): Boolean {
 }
 
 fun InteractionState.toMapping(): InteractionMapping {
-  return InteractionMapping(className, methodName, argsCount, type)
+  return InteractionMapping(language, className, methodName, argsCount, type)
 }
 
 fun InteractionMapping.toState(): InteractionState {
   val mapping = this
   return InteractionState().apply {
+    language = mapping.language
     className = mapping.className
     methodName = mapping.methodName
     argsCount = mapping.argsCount

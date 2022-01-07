@@ -9,7 +9,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValueProvider.Result
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.util.concurrency.annotations.RequiresEdt
+import org.strangeway.msa.JVM_LANGUAGE
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -23,10 +23,20 @@ class ProjectInteractionsService(private val project: Project) : SimpleModificat
 
   private val interactionsDb: MutableList<InteractionMapping> = mutableListOf()
 
-  @RequiresEdt
   fun suggestInteractionMapping(mapping: InteractionMapping) {
     lock.write {
       getState().addMapping(mapping)
+
+      interactionsDb.clear()
+      initialized = false
+    }
+
+    incModificationCount()
+  }
+
+  fun removeMapping(mapping: InteractionMapping) {
+    lock.write {
+      getState().removeMapping(mapping)
 
       interactionsDb.clear()
       initialized = false
@@ -50,10 +60,10 @@ class ProjectInteractionsService(private val project: Project) : SimpleModificat
   }
 
   fun findInteraction(className: String, methodName: String, argsCount: Int): InteractionMapping? {
-    val possibleCalls = getInteractionsIndex(project)[methodName]
+    val possibleClasses = getInteractionsIndex(project)[methodName] ?: emptyMap()
+    val possibleCalls = possibleClasses[className] ?: emptyList()
 
-    return possibleCalls
-      ?.find { it.className == className && it.argsCount == argsCount }
+    return possibleCalls.find { it.className == className && it.argsCount == argsCount }
   }
 
   private fun checkInitialized() {
@@ -78,20 +88,9 @@ class ProjectInteractionsService(private val project: Project) : SimpleModificat
   private fun getState(): InteractionsState {
     return InteractionsState.getInstance(project)
   }
-
-  fun removeMapping(mapping: InteractionMapping) {
-    lock.write {
-      getState().removeMapping(mapping)
-
-      interactionsDb.clear()
-      initialized = false
-    }
-
-    incModificationCount()
-  }
 }
 
-private fun getInteractionsIndex(project: Project): Map<String, List<InteractionMapping>> {
+private fun getInteractionsIndex(project: Project): Map<String, Map<String, List<InteractionMapping>>> {
   return CachedValuesManager.getManager(project).getCachedValue(project) {
     val javaPsiFacade = JavaPsiFacade.getInstance(project)
     val scope = GlobalSearchScope.allScope(project)
@@ -100,8 +99,10 @@ private fun getInteractionsIndex(project: Project): Map<String, List<Interaction
 
     val allRecords =
       (projectInteractionsService.getProjectInteractions() + globalInteractionsService.getGlobalInteractions())
+        .filter { it.language == JVM_LANGUAGE }
         .filter { javaPsiFacade.findClass(it.className, scope) != null }
         .groupBy { it.methodName }
+        .mapValues { (_, v) -> v.groupBy { it.className } }
 
     Result.create(
       allRecords,
