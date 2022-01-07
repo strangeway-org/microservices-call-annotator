@@ -22,8 +22,10 @@
         Special support provided for the following frameworks:
         <ul>
             <li>Spring Feign</li>
+            <li>Spring Data</li>
             <li>Retrofit</li>
             <li>Micronaut HTTP Client</li>
+            <li>Micronaut Data</li>
             <li>MicroProfile Rest Client</li>
         </ul>
         ]]></description>
