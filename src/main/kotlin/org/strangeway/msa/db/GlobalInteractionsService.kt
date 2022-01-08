@@ -89,9 +89,6 @@ class GlobalInteractionsService : SimpleModificationTracker() {
           if (responseCode == 200 || responseCode == 202) {
             log.info("Suggested new mapping to microservice annotator db")
           } else {
-            val error = it.readString()
-            println(error)
-
             log.warn("Unable to suggest new mapping to microservice annotator db: $responseCode")
           }
         }
