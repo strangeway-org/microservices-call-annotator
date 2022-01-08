@@ -35,8 +35,10 @@ class GlobalInteractionsService : SimpleModificationTracker() {
 
   @Language("http-url-reference")
   private val dbUrl: String = "https://msa.strangeway.org/api/suggestions/db"
+
   @Language("http-url-reference")
-  private val fallbackDbUrl: String = "https://raw.githubusercontent.com/strangeway-org/microservices-annotator-db/main/db.json"
+  private val fallbackDbUrl: String =
+    "https://raw.githubusercontent.com/strangeway-org/microservices-annotator-db/main/db.json"
 
   @Language("http-url-reference")
   private val dbSuggestionUrl: String = "https://msa.strangeway.org/api/suggestions"
@@ -187,6 +189,11 @@ class GlobalInteractionsService : SimpleModificationTracker() {
     }
 
     log.info("Updated microservice annotator db")
+    try {
+      tempFile.delete()
+    } catch (e: Exception) {
+      log.debug("Unable to remove temp file", e)
+    }
   }
 
   private fun notifyUserDbUpdated(changed: Int, project: Project) {
