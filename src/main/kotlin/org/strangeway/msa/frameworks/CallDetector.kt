@@ -3,6 +3,8 @@ package org.strangeway.msa.frameworks
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.util.CachedValueProvider.Result
 import com.intellij.psi.util.CachedValuesManager
 import org.jetbrains.uast.UCallExpression
@@ -43,3 +45,7 @@ data class FrameworkInteraction(
   override val type: InteractionType,
   val framework: String
 ) : Interaction
+
+fun hasLibraryClass(project: Project, fqn: String): Boolean {
+  return JavaPsiFacade.getInstance(project).findClass(fqn, ProjectScope.getLibrariesScope(project)) != null
+}

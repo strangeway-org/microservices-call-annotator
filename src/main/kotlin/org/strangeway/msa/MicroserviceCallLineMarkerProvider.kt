@@ -14,6 +14,8 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiElement
 import com.intellij.ui.awt.RelativePoint
+import com.intellij.util.Function
+import org.jetbrains.annotations.Nls
 import org.jetbrains.uast.UIdentifier
 import org.jetbrains.uast.UastCallKind
 import org.jetbrains.uast.getUCallExpression
@@ -21,6 +23,7 @@ import org.jetbrains.uast.toUElementOfType
 import org.strangeway.msa.db.getGlobalInteractionsService
 import org.strangeway.msa.db.getProjectInteractionsService
 import org.strangeway.msa.frameworks.CallDetector
+import org.strangeway.msa.frameworks.FrameworkInteraction
 import org.strangeway.msa.frameworks.Interaction
 import org.strangeway.msa.frameworks.MappedInteraction
 import java.awt.event.MouseEvent
@@ -48,12 +51,17 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
         for (callDetector in CallDetector.getCallDetectors(project)) {
           val interaction = callDetector.getCallInteraction(project, uCall)
           if (interaction != null) {
+            val tooltip: Function<PsiElement, @Nls String> =
+              if (interaction is FrameworkInteraction) Function {
+                "${interaction.type.title}: ${interaction.framework}"
+              } else interaction.type.tooltip
+
             result.add(
               LineMarkerInfo(
                 element,
                 element.textRange,
                 interaction.type.icon,
-                interaction.type.tooltip,
+                tooltip,
                 { e, elt -> showGutterMenu(interaction, e, elt) },
                 GutterIconRenderer.Alignment.LEFT,
                 interaction.type.accessibleNameProvider

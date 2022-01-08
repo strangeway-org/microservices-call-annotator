@@ -35,6 +35,8 @@ class GlobalInteractionsService : SimpleModificationTracker() {
 
   @Language("http-url-reference")
   private val dbUrl: String = "https://msa.strangeway.org/api/suggestions/db"
+  @Language("http-url-reference")
+  private val fallbackDbUrl: String = "https://raw.githubusercontent.com/strangeway-org/microservices-annotator-db/main/db.json"
 
   @Language("http-url-reference")
   private val dbSuggestionUrl: String = "https://msa.strangeway.org/api/suggestions"
@@ -124,37 +126,67 @@ class GlobalInteractionsService : SimpleModificationTracker() {
     try {
       val tempFile = FileUtil.createTempFile("microservice-annotator-db", ".json")
 
-      val targetUrl = System.getProperty("msa.dbUrl") ?: dbUrl
-
-      HttpRequests.request(targetUrl)
+      HttpRequests.request(dbUrl)
         .productNameAsUserAgent()
         .throwStatusCodeException(false)
         .connect {
           val responseCode = (it.connection as? HttpURLConnection)?.responseCode ?: 0
 
           if (responseCode == 200) {
-            it.saveToFile(tempFile, progressIndicator)
-            val changed = updateDatabaseState(tempFile)
-
-            if (changed > 0) {
-              notifyUserDbUpdated(changed, project)
-
-              if (force) {
-                // apply immediately
-                DaemonCodeAnalyzer.getInstance(project).restart()
-              }
-            } else if (force) {
-              notifyUserNoUpdates(project)
-            }
-
-            log.info("Updated microservice annotator db")
+            handleDbResponse(it, tempFile, progressIndicator, project, force)
           } else {
             log.warn("Unable to update microservice annotator db: $responseCode")
+
+            updateDatabaseWithFallbackUrl(project, tempFile, progressIndicator, force)
           }
         }
     } catch (e: Exception) {
       log.warn("Unable to update microservice annotator db", e)
     }
+  }
+
+  private fun updateDatabaseWithFallbackUrl(
+    project: Project,
+    tempFile: File,
+    progressIndicator: ProgressIndicator,
+    force: Boolean
+  ) {
+    HttpRequests.request(fallbackDbUrl)
+      .productNameAsUserAgent()
+      .throwStatusCodeException(false)
+      .connect {
+        val responseCode = (it.connection as? HttpURLConnection)?.responseCode ?: 0
+
+        if (responseCode == 200) {
+          handleDbResponse(it, tempFile, progressIndicator, project, force)
+        } else {
+          log.warn("Unable to update microservice annotator db with fallback URL: $responseCode")
+        }
+      }
+  }
+
+  private fun handleDbResponse(
+    it: HttpRequests.Request,
+    tempFile: File,
+    progressIndicator: ProgressIndicator,
+    project: Project,
+    force: Boolean
+  ) {
+    it.saveToFile(tempFile, progressIndicator)
+    val changed = updateDatabaseState(tempFile)
+
+    if (changed > 0) {
+      notifyUserDbUpdated(changed, project)
+
+      if (force) {
+        // apply immediately
+        DaemonCodeAnalyzer.getInstance(project).restart()
+      }
+    } else if (force) {
+      notifyUserNoUpdates(project)
+    }
+
+    log.info("Updated microservice annotator db")
   }
 
   private fun notifyUserDbUpdated(changed: Int, project: Project) {
