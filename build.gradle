@@ -27,7 +27,7 @@ dependencies {
 intellij {
   // type = 'IU'
   version = '2021.2.2'
-  plugins = ['java']
+  plugins = ['com.intellij.java']
   downloadSources = true
 }
 
