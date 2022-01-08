@@ -6,6 +6,8 @@
 
   <depends>com.intellij.java</depends>
 
+  <resource-bundle>messages.MicroservicesCallAnnotatorBundle</resource-bundle>
+
   <description><![CDATA[
     <p>
       Shows nice gutter icons for method calls that interact with network / database / file system in Java/Kotlin.
@@ -54,7 +56,15 @@
       <className>org.strangeway.msa.AnnotateMicroserviceCallIntention</className>
       <category>Microservices</category>
     </intentionAction>
+
+    <notificationGroup displayType="NONE" id="MicroservicesCallAnnotator" isLogByDefault="true"
+                       bundle="messages.MicroservicesCallAnnotatorBundle" key="msa.notification.group"/>
   </extensions>
+
+  <actions>
+    <action class="org.strangeway.msa.db.UpdateDbAction"/>
+    <action class="org.strangeway.msa.db.ResetDbAction"/>
+  </actions>
 
   <extensions defaultExtensionNs="org.strangeway.msa">
     <callDetector implementation="org.strangeway.msa.frameworks.DbCallDetector" order="first"/>

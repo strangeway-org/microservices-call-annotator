@@ -19,6 +19,6 @@ class DbCallDetector : CallDetector {
       resolved.parameterList.parametersCount
     ) ?: return null
 
-    return MappedInteraction(mapping.type, mapping)
+    return MappedInteraction(mapping.interactionType, mapping)
   }
 }

@@ -57,12 +57,12 @@ class GlobalInteractionsState : InteractionsState()
 @State(name = "ProjectInteractionsState", storages = [Storage("microserviceCalls.xml")])
 class ProjectInteractionsState : InteractionsState()
 
-open class InteractionState {
+class InteractionState {
   var language: String = ""
   var className: String = ""
   var methodName: String = ""
   var argsCount: Int = 0
-  var type: InteractionType = InteractionType.REQUEST
+  var interactionType: InteractionType = InteractionType.REQUEST
 
   var shared: Boolean = false
   var enabled: Boolean = true
@@ -72,8 +72,12 @@ fun equivalent(it: InteractionState, mapping: InteractionMapping): Boolean {
   return it.className == mapping.className && it.methodName == mapping.methodName && it.argsCount == mapping.argsCount
 }
 
+fun equivalent(it: InteractionState, that: InteractionState): Boolean {
+  return it.className == that.className && it.methodName == that.methodName && it.argsCount == that.argsCount
+}
+
 fun InteractionState.toMapping(): InteractionMapping {
-  return InteractionMapping(language, className, methodName, argsCount, type)
+  return InteractionMapping(language, className, methodName, argsCount, interactionType)
 }
 
 fun InteractionMapping.toState(): InteractionState {
@@ -83,6 +87,6 @@ fun InteractionMapping.toState(): InteractionState {
     className = mapping.className
     methodName = mapping.methodName
     argsCount = mapping.argsCount
-    type = mapping.type
+    interactionType = mapping.interactionType
   }
 }

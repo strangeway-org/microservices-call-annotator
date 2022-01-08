@@ -53,6 +53,17 @@ class ProjectInteractionsService(private val project: Project) : SimpleModificat
     }
   }
 
+  fun reset() {
+    lock.write {
+      getState().interactions = mutableListOf()
+      getState().lastUpdateTs = Long.MIN_VALUE
+
+      initialized = false
+    }
+
+    incModificationCount()
+  }
+
   fun hasMethods(methodName: String?): Boolean {
     if (methodName == null) return false
 

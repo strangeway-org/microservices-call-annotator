@@ -5,5 +5,5 @@ data class InteractionMapping(
   val className: String,
   val methodName: String,
   val argsCount: Int,
-  val type: InteractionType
+  val interactionType: InteractionType
 )
