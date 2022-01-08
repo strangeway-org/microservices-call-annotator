@@ -74,5 +74,7 @@
     <callDetector implementation="org.strangeway.msa.frameworks.SpringFeignCallDetector"/>
     <callDetector implementation="org.strangeway.msa.frameworks.SpringDataCallDetector"/>
     <callDetector implementation="org.strangeway.msa.frameworks.RetrofitCallDetector"/>
+    <callDetector implementation="org.strangeway.msa.frameworks.MicroprofileRestCallDetector"/>
+    <callDetector implementation="org.strangeway.msa.frameworks.JdbiCallDetector"/>
   </extensions>
 </idea-plugin>
