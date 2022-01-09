@@ -13,8 +13,10 @@ plugins {
 group 'org.strangeway.microservices'
 version '1.0.0'
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+java {
+  sourceCompatibility = JavaVersion.toVersion("11")
+  targetCompatibility = JavaVersion.toVersion("11")
+}
 
 repositories {
   mavenCentral()
