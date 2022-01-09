@@ -13,9 +13,8 @@ import com.intellij.openapi.actionSystem.impl.Utils
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiElement
+import com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolPresentableText
 import com.intellij.ui.awt.RelativePoint
-import com.intellij.util.Function
-import org.jetbrains.annotations.Nls
 import org.jetbrains.uast.UIdentifier
 import org.jetbrains.uast.UastCallKind
 import org.jetbrains.uast.getUCallExpression
@@ -45,23 +44,29 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
 
     for (element in elements) {
       val uIdentifier = element.toUElementOfType<UIdentifier>()
-      val uCall = uIdentifier?.getUCallExpression(searchLimit = 2)
+      val uCall = uIdentifier?.getUCallExpression(searchLimit = 3)
       val callKind = uCall?.kind
+
       if (callKind == UastCallKind.METHOD_CALL || callKind == UastCallKind.CONSTRUCTOR_CALL) {
+        if (callKind == UastCallKind.METHOD_CALL && uCall.methodIdentifier?.sourcePsi != uIdentifier.sourcePsi) {
+          continue
+        }
+
         for (callDetector in CallDetector.getCallDetectors(project)) {
           val interaction = callDetector.getCallInteraction(project, uCall)
           if (interaction != null) {
-            val tooltip: Function<PsiElement, @Nls String> =
-              if (interaction is FrameworkInteraction) Function {
-                "${interaction.type.title}: ${interaction.framework}"
-              } else interaction.type.tooltip
+            val tooltip: String = if (interaction is FrameworkInteraction) {
+              "${interaction.type.title} ${interaction.framework}"
+            } else {
+              interaction.type.title
+            }
 
             result.add(
               LineMarkerInfo(
                 element,
                 element.textRange,
                 interaction.type.icon,
-                tooltip,
+                { tooltip + ": " + getSymbolPresentableText(it) + "()" },
                 { e, elt -> showGutterMenu(interaction, e, elt) },
                 GutterIconRenderer.Alignment.LEFT,
                 interaction.type.accessibleNameProvider
@@ -100,7 +105,7 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
       AllIcons.General.User
     ) {
       override fun actionPerformed(e: AnActionEvent) {
-        BrowserUtil.browse("mailto:github@strangeway.org")
+        BrowserUtil.browse("https://github.com/strangeway-org/microservices-annotator-db/issues/new")
       }
 
       override fun update(e: AnActionEvent) {}

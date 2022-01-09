@@ -22,6 +22,5 @@ enum class InteractionType(val title: String, val icon: Icon) {
   WEBSOCKET("WebSocket", Gutter.WEBSOCKET),
   STREAMING("Streaming", Gutter.STREAMING);
 
-  val tooltip: Function<PsiElement, @NotNull @Nls String> = Function { title }
   val accessibleNameProvider: Supplier<@NotNull @Nls String> = Supplier { title }
 }

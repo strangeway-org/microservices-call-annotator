@@ -13,6 +13,7 @@ import com.intellij.psi.PsiMethod
 import com.intellij.psi.search.ProjectScope
 import com.intellij.ui.SimpleListCellRenderer
 import org.jetbrains.uast.UIdentifier
+import org.jetbrains.uast.UastCallKind
 import org.jetbrains.uast.getUCallExpression
 import org.jetbrains.uast.toUElementOfType
 import org.strangeway.msa.db.InteractionMapping
@@ -36,9 +37,15 @@ class AnnotateMicroserviceCallIntention : IntentionAction, Iconable, LowPriority
     val offset = editor.caretModel.offset
     val element = file.findElementAt(offset)
 
-    val identifier = element.toUElementOfType<UIdentifier>()
-    val call = identifier.getUCallExpression(searchLimit = 2)
-    return call != null
+    val uIdentifier = element.toUElementOfType<UIdentifier>() ?: return false
+    val uCall = uIdentifier.getUCallExpression(searchLimit = 3) ?: return false
+    val callKind = uCall.kind
+
+    if (callKind == UastCallKind.METHOD_CALL && uCall.methodIdentifier?.sourcePsi != uIdentifier.sourcePsi) {
+      return false
+    }
+
+    return callKind == UastCallKind.METHOD_CALL || callKind == UastCallKind.CONSTRUCTOR_CALL
   }
 
   override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
@@ -48,7 +55,7 @@ class AnnotateMicroserviceCallIntention : IntentionAction, Iconable, LowPriority
     val element = file.findElementAt(offset)
 
     val identifier = element.toUElementOfType<UIdentifier>()
-    val call = identifier.getUCallExpression(searchLimit = 2)
+    val call = identifier.getUCallExpression(searchLimit = 3)
     val resolvedCall = call?.resolve() ?: return
 
     showTypesPopup(project, editor, file, resolvedCall)
