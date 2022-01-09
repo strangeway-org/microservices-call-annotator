@@ -22,7 +22,6 @@ import org.jetbrains.uast.toUElementOfType
 import org.strangeway.msa.db.getGlobalInteractionsService
 import org.strangeway.msa.db.getProjectInteractionsService
 import org.strangeway.msa.frameworks.CallDetector
-import org.strangeway.msa.frameworks.FrameworkInteraction
 import org.strangeway.msa.frameworks.Interaction
 import org.strangeway.msa.frameworks.MappedInteraction
 import java.awt.event.MouseEvent
@@ -55,18 +54,12 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
         for (callDetector in CallDetector.getCallDetectors(project)) {
           val interaction = callDetector.getCallInteraction(project, uCall)
           if (interaction != null) {
-            val tooltip: String = if (interaction is FrameworkInteraction) {
-              "${interaction.type.title} ${interaction.framework}"
-            } else {
-              interaction.type.title
-            }
-
             result.add(
               LineMarkerInfo(
                 element,
                 element.textRange,
                 interaction.type.icon,
-                { tooltip + ": " + getSymbolPresentableText(it) + "()" },
+                { interaction.type.title + ": " + getSymbolPresentableText(it) + "()" },
                 { e, elt -> showGutterMenu(interaction, e, elt) },
                 GutterIconRenderer.Alignment.LEFT,
                 interaction.type.accessibleNameProvider
