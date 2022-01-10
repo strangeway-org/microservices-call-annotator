@@ -1,9 +1,12 @@
 package org.strangeway.msa.db
 
 val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
+  "com.google.common.",
+  "com.haulmont.cuba.",
   "com.intellij.util.",
   "io.grpc.",
   "io.javalin.",
+  "io.jmix.",
   "io.ktor.",
   "io.micronaut.",
   "io.netty.",
