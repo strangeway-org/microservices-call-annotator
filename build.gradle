@@ -11,7 +11,7 @@ plugins {
 }
 
 group 'org.strangeway.microservices'
-version '1.0.0'
+version '1.0.1'
 
 java {
   sourceCompatibility = JavaVersion.toVersion("11")
@@ -43,7 +43,8 @@ compileTestKotlin {
 
 patchPluginXml {
   changeNotes = """
-        Initial version.
+        Support constructor call expressions.
+        Sort interaction types in intention popup.
     """
   sinceBuild = '212'
   untilBuild = '222'
