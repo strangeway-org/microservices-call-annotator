@@ -11,7 +11,7 @@ plugins {
 }
 
 group 'org.strangeway.microservices'
-version '1.0.1'
+version '1.0.2'
 
 java {
   sourceCompatibility = JavaVersion.toVersion("11")
@@ -43,8 +43,7 @@ compileTestKotlin {
 
 patchPluginXml {
   changeNotes = """
-        Support constructor call expressions.
-        Sort interaction types in intention popup.
+      Support AWS S3 and Mongo DB clients.
     """
   sinceBuild = '212'
   untilBuild = '222'

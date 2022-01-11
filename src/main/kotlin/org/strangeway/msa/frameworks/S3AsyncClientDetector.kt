@@ -16,8 +16,9 @@ class S3AsyncClientDetector : CallDetector {
   override fun getCallInteraction(project: Project, uCall: UCallExpression): Interaction? {
     val method = uCall.resolve() ?: return null
     val clazz = method.containingClass ?: return null
+    val qualifiedName = clazz.qualifiedName
 
-    if (clazz.qualifiedName == "software.amazon.awssdk.services.s3.S3AsyncClient") {
+    if (qualifiedName == "software.amazon.awssdk.services.s3.S3AsyncClient") {
       val returnClass = (method.returnType as? PsiClassType)?.rawType()?.resolve()
       if (returnClass != null && (
             returnClass.qualifiedName == "java.util.concurrent.CompletableFuture"
@@ -27,7 +28,7 @@ class S3AsyncClientDetector : CallDetector {
       }
     }
 
-    if (clazz.qualifiedName == "software.amazon.awssdk.services.s3.S3Client") {
+    if (qualifiedName == "software.amazon.awssdk.services.s3.S3Client") {
       val returnClass = (method.returnType as? PsiClassType)?.rawType()?.resolve()
       if (returnClass != null
         && InheritanceUtil.isInheritor(returnClass, "software.amazon.awssdk.services.s3.model.S3Response")

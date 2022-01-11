@@ -77,5 +77,6 @@
     <callDetector implementation="org.strangeway.msa.frameworks.MicroprofileRestCallDetector"/>
     <callDetector implementation="org.strangeway.msa.frameworks.JdbiCallDetector"/>
     <callDetector implementation="org.strangeway.msa.frameworks.S3AsyncClientDetector"/>
+    <callDetector implementation="org.strangeway.msa.frameworks.MongoDbCallDetector"/>
   </extensions>
 </idea-plugin>

@@ -4,6 +4,7 @@ val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
   "com.google.common.",
   "com.haulmont.cuba.",
   "com.intellij.util.",
+  "com.mongodb.",
   "io.grpc.",
   "io.javalin.",
   "io.jmix.",
