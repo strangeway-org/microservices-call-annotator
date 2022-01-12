@@ -1,6 +1,7 @@
 package org.strangeway.msa.db
 
 val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
+  "com.fasterxml.",
   "com.google.common.",
   "com.haulmont.cuba.",
   "com.intellij.util.",
@@ -12,6 +13,7 @@ val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
   "io.micronaut.",
   "io.netty.",
   "io.quarkus.",
+  "io.r2dbc.",
   "io.reactivex.",
   "io.restassured",
   "io.rsocket.",
@@ -22,6 +24,7 @@ val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
   "javax.",
   "jdbi.",
   "kong.unirest.",
+  "kotlin.",
   "kotlinx.",
   "okhttp3.",
   "org.apache.",
@@ -31,5 +34,7 @@ val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
   "org.jooby.",
   "org.jooq.",
   "org.springframework.",
-  "retrofit2."
+  "reactor.",
+  "retrofit2.",
+  "software.amazon.awssdk.",
 )
