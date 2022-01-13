@@ -1,8 +1,6 @@
 package org.strangeway.msa
 
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
-import com.intellij.codeInsight.daemon.LineMarkerInfo
-import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor
+import com.intellij.codeInsight.daemon.*
 import com.intellij.icons.AllIcons
 import com.intellij.ide.BrowserUtil
 import com.intellij.ide.DataManager
@@ -12,9 +10,11 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.impl.Utils
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolPresentableText
 import com.intellij.ui.awt.RelativePoint
+import com.intellij.util.Function
 import org.jetbrains.uast.UIdentifier
 import org.jetbrains.uast.UastCallKind
 import org.jetbrains.uast.getUCallExpression
@@ -25,6 +25,7 @@ import org.strangeway.msa.frameworks.CallDetector
 import org.strangeway.msa.frameworks.Interaction
 import org.strangeway.msa.frameworks.MappedInteraction
 import java.awt.event.MouseEvent
+import java.util.function.Supplier
 import javax.swing.Icon
 
 class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
@@ -48,6 +49,14 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
 
       if (callKind == UastCallKind.METHOD_CALL || callKind == UastCallKind.CONSTRUCTOR_CALL) {
         if (callKind == UastCallKind.METHOD_CALL && uCall.methodIdentifier?.sourcePsi != uIdentifier.sourcePsi) {
+          // this is not identifier of call
+          continue
+        }
+
+        if (callKind == UastCallKind.CONSTRUCTOR_CALL
+          && uCall.classReference?.referenceNameElement?.sourcePsi != uIdentifier.sourcePsi
+        ) {
+          // this is not identifier of constructor
           continue
         }
 
@@ -55,13 +64,13 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
           val interaction = callDetector.getCallInteraction(project, uCall)
           if (interaction != null) {
             result.add(
-              LineMarkerInfo(
+              MsLineMarkerInfo(
                 element,
                 element.textRange,
                 interaction.type.icon,
                 { interaction.type.title + ": " + getSymbolPresentableText(it) + "()" },
+                { interaction.type.title + ": " + getSymbolPresentableText(it) + "()" },
                 { e, elt -> showGutterMenu(interaction, e, elt) },
-                GutterIconRenderer.Alignment.LEFT,
                 interaction.type.accessibleNameProvider
               )
             )
@@ -113,5 +122,34 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
         false
       )
       .show(RelativePoint(e))
+  }
+
+  private class MsLineMarkerInfo(
+    element: PsiElement,
+    textRange: TextRange,
+    icon: Icon,
+    tooltipProvider: Function<in PsiElement, String>,
+    presentationProvider: Function<PsiElement, String>,
+    navHandler: GutterIconNavigationHandler<PsiElement>,
+    accessibleNameProvider: Supplier<String>
+  ) : MergeableLineMarkerInfo<PsiElement>(
+    element,
+    textRange,
+    icon,
+    tooltipProvider,
+    presentationProvider,
+    navHandler,
+    GutterIconRenderer.Alignment.LEFT,
+    accessibleNameProvider
+  ) {
+    override fun canMergeWith(info: MergeableLineMarkerInfo<*>): Boolean {
+      return info is MsLineMarkerInfo
+    }
+
+    override fun getCommonIcon(infos: MutableList<out MergeableLineMarkerInfo<*>>): Icon {
+      if (infos.all { it.icon == icon }) return icon
+
+      return MicroserviceIcons.Gutter.MERGED
+    }
   }
 }

@@ -19,6 +19,7 @@ object MicroserviceIcons {
     val RUN_PROCESS: Icon = getIcon("/org/strangeway/msa/gutter/run-process.svg")
     val WEBSOCKET: Icon = getIcon("/org/strangeway/msa/gutter/websocket.svg")
     val STREAMING: Icon = getIcon("/org/strangeway/msa/gutter/streaming.svg")
+    val MERGED: Icon = getIcon("/org/strangeway/msa/gutter/merged.svg")
   }
 
   @JvmStatic
