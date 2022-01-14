@@ -78,5 +78,6 @@
     <callDetector implementation="org.strangeway.msa.frameworks.JdbiCallDetector"/>
     <callDetector implementation="org.strangeway.msa.frameworks.S3AsyncClientDetector"/>
     <callDetector implementation="org.strangeway.msa.frameworks.MongoDbCallDetector"/>
+    <callDetector implementation="org.strangeway.msa.frameworks.RedisLettuceCallDetector"/>
   </extensions>
 </idea-plugin>
