@@ -108,7 +108,7 @@ class AnnotateMicroserviceCallIntention : IntentionAction, Iconable, LowPriority
     )
 
     if (ProjectScope.getLibrariesScope(project).contains(declarationFile)) {
-      getGlobalInteractionsService().suggestInteractionMapping(mapping)
+      getGlobalInteractionsService().suggestInteractionMapping(project, mapping)
     } else {
       getProjectInteractionsService(project).suggestInteractionMapping(mapping)
     }

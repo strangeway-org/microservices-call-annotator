@@ -47,7 +47,7 @@ class GlobalInteractionsService : SimpleModificationTracker() {
 
   private val interactionsDb: MutableList<InteractionMapping> = mutableListOf()
 
-  fun suggestInteractionMapping(mapping: InteractionMapping) {
+  fun suggestInteractionMapping(project: Project, mapping: InteractionMapping) {
     lock.write {
       getState().addMapping(mapping)
 
@@ -56,15 +56,17 @@ class GlobalInteractionsService : SimpleModificationTracker() {
     }
 
     AppExecutorUtil.getAppExecutorService().submit {
-      suggestForPublicDb(mapping)
+      suggestForPublicDb(project, mapping)
     }
 
     incModificationCount()
   }
 
-  private fun suggestForPublicDb(mapping: InteractionMapping) {
+  private fun suggestForPublicDb(project: Project, mapping: InteractionMapping) {
     if (SHARE_JAVA_PACKAGE_PREFIXES.none { mapping.className.startsWith(it) }) {
       log.info("Interaction mapping is not allowed to share to public " + mapping.className)
+      // store in project instead to share with colleagues
+      getProjectInteractionsService(project).suggestInteractionMapping(mapping)
       return
     }
 
