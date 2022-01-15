@@ -1,7 +1,5 @@
 package org.strangeway.msa.db
 
-import com.intellij.psi.PsiElement
-import com.intellij.util.Function
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.NotNull
 import org.strangeway.msa.MicroserviceIcons.Gutter

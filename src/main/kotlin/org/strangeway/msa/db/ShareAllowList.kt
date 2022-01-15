@@ -4,6 +4,7 @@ val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
   "com.amazonaws.services.",
   "com.fasterxml.",
   "com.google.api.client.",
+  "com.google.appengine.",
   "com.google.cloud.",
   "com.google.common.",
   "com.haulmont.cuba.",

@@ -45,7 +45,7 @@ patchPluginXml {
   changeNotes = """
       Fixed issue with double icon for constructors. 
       Implemented mergeable line markers.
-      Support Redis async and reactive APIs.
+      Support gRPC, Google Firestore, Redis async and reactive APIs.
     """
   sinceBuild = '212'
   untilBuild = '222'
