@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.icons.AllIcons
 import com.intellij.ide.BrowserUtil
 import com.intellij.ide.DataManager
+import com.intellij.lang.java.JavaLanguage
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -15,10 +16,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolPresentableText
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.Function
-import org.jetbrains.uast.UIdentifier
-import org.jetbrains.uast.UastCallKind
-import org.jetbrains.uast.getUCallExpression
-import org.jetbrains.uast.toUElementOfType
+import org.jetbrains.uast.*
 import org.strangeway.msa.db.getGlobalInteractionsService
 import org.strangeway.msa.db.getProjectInteractionsService
 import org.strangeway.msa.frameworks.CallDetector
@@ -55,7 +53,7 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
         }
 
         if (callKind == UastCallKind.CONSTRUCTOR_CALL
-          && uCall.classReference?.referenceNameElement?.sourcePsi != uIdentifier.sourcePsi
+          && getConstructorIdentifier(uCall)?.sourcePsi != uIdentifier.sourcePsi
         ) {
           // this is not identifier of constructor
           continue
@@ -83,6 +81,14 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
         }
       }
     }
+  }
+
+  // hack IDEA-287566
+  private fun getConstructorIdentifier(uCall: UCallExpression): UElement? {
+    if (uCall.lang.`is`(JavaLanguage.INSTANCE)) {
+      return uCall.classReference?.referenceNameElement
+    }
+    return uCall.methodIdentifier
   }
 
   private fun showGutterMenu(interaction: Interaction, e: MouseEvent?, elt: PsiElement?) {
