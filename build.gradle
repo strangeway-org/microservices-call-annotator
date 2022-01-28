@@ -11,7 +11,7 @@ plugins {
 }
 
 group 'org.strangeway.microservices'
-version '1.0.3'
+version '1.0.4'
 
 java {
   sourceCompatibility = JavaVersion.toVersion("11")
@@ -43,9 +43,7 @@ compileTestKotlin {
 
 patchPluginXml {
   changeNotes = """
-      Fixed issue with double icon for constructors. 
-      Implemented mergeable line markers.
-      Support gRPC, Google Firestore, Redis async and reactive APIs.
+      Fixed missing icon for constructor calls in Kotlin.
     """
   sinceBuild = '212'
   untilBuild = '222'
