@@ -37,6 +37,7 @@ val SHARE_JAVA_PACKAGE_PREFIXES = listOf(
   "org.apache.",
   "org.eclipse.",
   "org.elasticsearch.client.",
+  "org.elasticsearch.search.",
   "org.hibernate.",
   "org.http4k.",
   "org.http4k.",
