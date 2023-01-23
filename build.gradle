@@ -6,47 +6,43 @@
 
 plugins {
   id 'java'
-  id 'org.jetbrains.intellij' version '1.3.0'
-  id 'org.jetbrains.kotlin.jvm' version '1.5.10'
+  id 'org.jetbrains.intellij' version '1.12.0'
+  id 'org.jetbrains.kotlin.jvm' version '1.7.21'
 }
 
 group 'org.strangeway.microservices'
-version '1.0.4'
+version '1.2.0'
 
 java {
-  sourceCompatibility = JavaVersion.toVersion("11")
-  targetCompatibility = JavaVersion.toVersion("11")
+  sourceCompatibility = JavaVersion.toVersion("17")
+  targetCompatibility = JavaVersion.toVersion("17")
 }
 
 repositories {
   mavenCentral()
 }
 
-dependencies {
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-}
-
 intellij {
   // type = 'IU'
-  version = '2021.2.2'
+  version = '2022.3.1'
   plugins = ['com.intellij.java']
   downloadSources = true
 }
 
 compileKotlin {
-  kotlinOptions.jvmTarget = "11"
+  kotlinOptions.jvmTarget = "17"
 }
 
 compileTestKotlin {
-  kotlinOptions.jvmTarget = "11"
+  kotlinOptions.jvmTarget = "17"
 }
 
 patchPluginXml {
   changeNotes = """
       Fixed missing icon for constructor calls in Kotlin.
     """
-  sinceBuild = '212'
-  untilBuild = '222'
+  sinceBuild = '223'
+  untilBuild = '233'
 }
 
 buildPlugin {
