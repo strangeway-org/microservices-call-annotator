@@ -6,12 +6,12 @@
 
 plugins {
   id 'java'
-  id 'org.jetbrains.intellij' version '1.12.0'
+  id 'org.jetbrains.intellij' version '1.13.3'
   id 'org.jetbrains.kotlin.jvm' version '1.7.21'
 }
 
 group 'org.strangeway.microservices'
-version '1.2.0'
+version '1.3.0'
 
 java {
   sourceCompatibility = JavaVersion.toVersion("17")
@@ -24,7 +24,7 @@ repositories {
 
 intellij {
   // type = 'IU'
-  version = '2022.3.1'
+  version = '2022.2.4'
   plugins = ['com.intellij.java']
   downloadSources = true
 }
@@ -39,9 +39,10 @@ compileTestKotlin {
 
 patchPluginXml {
   changeNotes = """
-      Fixed missing icon for constructor calls in Kotlin.
+      Always use Github to load database. <br/>
+      Change data suggester URL to new location.
     """
-  sinceBuild = '223'
+  sinceBuild = '222'
   untilBuild = '233'
 }
 

@@ -34,14 +34,13 @@ class GlobalInteractionsService : SimpleModificationTracker() {
   private val lock: ReentrantReadWriteLock = ReentrantReadWriteLock()
 
   @Language("http-url-reference")
-  private val dbUrl: String = "https://msa.strangeway.org/api/suggestions/db"
+  private val dbUrl: String = "https://raw.githubusercontent.com/strangeway-org/microservices-annotator-db/main/db.json"
 
   @Language("http-url-reference")
-  private val fallbackDbUrl: String =
-    "https://raw.githubusercontent.com/strangeway-org/microservices-annotator-db/main/db.json"
+  private val fallbackDbUrl: String = dbUrl
 
   @Language("http-url-reference")
-  private val dbSuggestionUrl: String = "https://msa.strangeway.org/api/suggestions"
+  private val dbSuggestionUrl: String = "https://eoabdlwsqm7nn5o.m.pipedream.net"
 
   private val updateDelay: Duration = Duration.ofDays(1)
 
