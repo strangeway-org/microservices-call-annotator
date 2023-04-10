@@ -18,7 +18,7 @@
       Uses global database of JVM APIs that you can help to improve by using the special intention action:
       <i>Alt-Enter - Mark microservice interaction method</i>.
       <br/>
-      Updates database once a day by calling <a href="https://msa.strangeway.org">https://msa.strangeway.org</a>.
+      Updates database once a day by calling <a href="https://github.com/strangeway-org/microservices-annotator-db">GitHub</a>.
     </p>
 
     Special support provided for the following frameworks:
