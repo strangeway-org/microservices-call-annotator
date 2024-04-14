@@ -5,6 +5,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.BrowserUtil
 import com.intellij.ide.DataManager
 import com.intellij.lang.java.JavaLanguage
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -101,6 +102,8 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
         "Remove Mapping", "Remove interaction mapping from settings",
         AllIcons.Actions.DeleteTag
       ) {
+        override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
         override fun actionPerformed(e: AnActionEvent) {
           getGlobalInteractionsService().removeMapping(interaction.mapping)
           getProjectInteractionsService(elt.project).removeMapping(interaction.mapping)
@@ -116,6 +119,8 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
       "Submit Feedback", "Send an e-mail to the maintainer",
       AllIcons.General.User
     ) {
+      override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
       override fun actionPerformed(e: AnActionEvent) {
         BrowserUtil.browse("https://github.com/strangeway-org/microservices-annotator-db/issues/new")
       }
@@ -127,7 +132,7 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
       .createActionGroupPopup(
         "Interaction Actions",
         actionGroup,
-        Utils.wrapToAsyncDataContext(DataManager.getInstance().getDataContext(e.component)),
+        Utils.createAsyncDataContext(DataManager.getInstance().getDataContext(e.component)),
         JBPopupFactory.ActionSelectionAid.MNEMONICS,
         false
       )

@@ -1,11 +1,11 @@
 plugins {
   id 'java'
-  id 'org.jetbrains.kotlin.jvm' version '1.9.10'
-  id 'org.jetbrains.intellij' version '1.16.0'
+  id 'org.jetbrains.kotlin.jvm' version '1.9.21'
+  id 'org.jetbrains.intellij' version '1.17.0'
 }
 
 group 'org.strangeway.microservices'
-version '1.4.0'
+version '1.5.0'
 
 java {
   sourceCompatibility = JavaVersion.toVersion("17")
@@ -17,7 +17,7 @@ repositories {
 }
 
 intellij {
-  version = '2023.2.3'
+  version = '2023.3.5'
   plugins = ['com.intellij.java']
   downloadSources = true
 }
@@ -32,11 +32,10 @@ compileTestKotlin {
 
 patchPluginXml {
   changeNotes = """
-      Always use Github to load database. <br/>
-      Change data suggester URL to new location.
+      Build compatible with IntelliJ IDEA 2023.3
     """
-  sinceBuild = '232'
-  untilBuild = '241'
+  sinceBuild = '233'
+  untilBuild = '243'
 }
 
 buildPlugin {

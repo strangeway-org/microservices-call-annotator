@@ -195,25 +195,21 @@ class GlobalInteractionsService : SimpleModificationTracker() {
   }
 
   private fun notifyUserDbUpdated(changed: Int, project: Project) {
-    ApplicationManager.getApplication().invokeLater({
-      Notification(
-        "MicroservicesCallAnnotator",
-        "Interactions updated",
-        "Microservices annotator database updated. $changed new records",
-        NotificationType.INFORMATION
-      ).notify(project)
-    }, ModalityState.NON_MODAL, project.disposed)
+    Notification(
+      "MicroservicesCallAnnotator",
+      "Interactions updated",
+      "Microservices annotator database updated. $changed new records",
+      NotificationType.INFORMATION
+    ).notify(project)
   }
 
   private fun notifyUserNoUpdates(project: Project) {
-    ApplicationManager.getApplication().invokeLater({
-      Notification(
-        "MicroservicesCallAnnotator",
-        "No interaction updates",
-        "Microservices annotator database not changed yet",
-        NotificationType.INFORMATION
-      ).notify(project)
-    }, ModalityState.NON_MODAL, project.disposed)
+    Notification(
+      "MicroservicesCallAnnotator",
+      "No interaction updates",
+      "Microservices annotator database not changed yet",
+      NotificationType.INFORMATION
+    ).notify(project)
   }
 
   private fun updateDatabaseState(tempFile: File): Int {
