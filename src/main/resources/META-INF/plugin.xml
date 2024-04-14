@@ -11,11 +11,11 @@
   <description><![CDATA[
     <p>
       Shows nice gutter icons for method calls that interact with network / database / file system in Java/Kotlin.
-      This helps to understand code of microservices and see all the interaction points.
+      This helps to understand the code of microservices and see all the interaction points.
     </p>
 
     <p>
-      Uses global database of JVM APIs that you can help to improve by using the special intention action:
+      Uses a global database of JVM APIs that you can help to improve by using the special intention action:
       <i>Alt-Enter - Mark microservice interaction method</i>.
       <br/>
       Updates database once a day by calling <a href="https://github.com/strangeway-org/microservices-annotator-db">GitHub</a>.
@@ -46,13 +46,13 @@
   <extensions defaultExtensionNs="com.intellij">
     <postStartupActivity implementation="org.strangeway.msa.db.InteractionsUpdateStartupActivity"/>
 
-    <projectService serviceImplementation="org.strangeway.msa.db.ProjectInteractionsState"/>
     <applicationService serviceImplementation="org.strangeway.msa.db.GlobalInteractionsState"/>
 
     <codeInsight.lineMarkerProvider language="UAST"
                                     implementationClass="org.strangeway.msa.MicroserviceCallLineMarkerProvider"/>
 
     <intentionAction id="AnnotateMicroserviceCall">
+      <language>UAST</language>
       <className>org.strangeway.msa.AnnotateMicroserviceCallIntention</className>
       <category>Microservices</category>
     </intentionAction>

@@ -3,13 +3,16 @@ package org.strangeway.msa.db
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
+import com.intellij.openapi.progress.blockingContext
 import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 
-class InteractionsUpdateStartupActivity : StartupActivity.DumbAware {
-  override fun runActivity(project: Project) {
-    requestDbUpdate(project)
+internal class InteractionsUpdateStartupActivity : ProjectActivity {
+  override suspend fun execute(project: Project) {
+    blockingContext {
+      requestDbUpdate(project)
+    }
   }
 }
 

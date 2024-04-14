@@ -2,6 +2,7 @@ package org.strangeway.msa.db
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.project.Project
@@ -54,6 +55,7 @@ open class InteractionsState : PersistentStateComponent<InteractionsState> {
 @State(name = "GlobalInteractionsState", storages = [Storage("microserviceCalls.xml")])
 class GlobalInteractionsState : InteractionsState()
 
+@Service(Service.Level.PROJECT)
 @State(name = "ProjectInteractionsState", storages = [Storage("microserviceCalls.xml")])
 class ProjectInteractionsState : InteractionsState()
 
