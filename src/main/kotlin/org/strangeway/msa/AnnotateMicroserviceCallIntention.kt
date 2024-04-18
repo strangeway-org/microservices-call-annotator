@@ -67,7 +67,7 @@ class AnnotateMicroserviceCallIntention : IntentionAction, Iconable, LowPriority
       label.text = value.title
     }
 
-    val types = InteractionType.values().sortedBy { it.title }
+    val types = InteractionType.entries.sortedBy { it.title }
 
     JBPopupFactory.getInstance()
       .createPopupChooserBuilder(types)
