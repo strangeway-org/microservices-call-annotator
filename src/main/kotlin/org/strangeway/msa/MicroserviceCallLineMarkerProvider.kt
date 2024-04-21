@@ -116,7 +116,7 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
     }
 
     actionGroup.add(object : AnAction(
-      "Submit Feedback", "Send an e-mail to the maintainer",
+      "Submit Feedback", "Submit a GitHub issue",
       AllIcons.General.User
     ) {
       override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
