@@ -49,14 +49,14 @@ class MicroserviceCallLineMarkerProvider : LineMarkerProviderDescriptor() {
 
       if (callKind == UastCallKind.METHOD_CALL || callKind == UastCallKind.CONSTRUCTOR_CALL) {
         if (callKind == UastCallKind.METHOD_CALL && uCall.methodIdentifier?.sourcePsi != uIdentifier.sourcePsi) {
-          // this is not identifier of call
+          // this is not an identifier of call
           continue
         }
 
         if (callKind == UastCallKind.CONSTRUCTOR_CALL
           && getConstructorIdentifier(uCall)?.sourcePsi != uIdentifier.sourcePsi
         ) {
-          // this is not identifier of constructor
+          // this is not an identifier of constructor
           continue
         }
 
