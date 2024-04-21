@@ -10,7 +10,7 @@ class UpdateDbAction : AnAction("Update MSA DB") {
   override fun actionPerformed(e: AnActionEvent) {
     val project = e.project ?: return
 
-    requestDbUpdate(project, true)
+    getGlobalInteractionsService().scheduleUpdate(project, true)
   }
 
   override fun update(e: AnActionEvent) {

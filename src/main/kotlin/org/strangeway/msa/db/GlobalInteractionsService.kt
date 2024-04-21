@@ -5,16 +5,20 @@ import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.coroutineToIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.openapi.util.io.FileUtil
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.concurrency.annotations.RequiresBackgroundThread
 import com.intellij.util.io.HttpRequests
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 import java.io.File
 import java.net.HttpURLConnection
@@ -25,7 +29,7 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 @Service(Service.Level.APP)
-class GlobalInteractionsService : SimpleModificationTracker() {
+class GlobalInteractionsService(private val coroutineScope: CoroutineScope) : SimpleModificationTracker() {
   private val log: Logger = Logger.getInstance(GlobalInteractionsService::class.java)
 
   @Volatile
@@ -109,8 +113,19 @@ class GlobalInteractionsService : SimpleModificationTracker() {
     incModificationCount()
   }
 
+  // todo move to ProjectInteractionService
+  fun scheduleUpdate(project: Project, force: Boolean = false) {
+    coroutineScope.launch {
+      withBackgroundProgress(project, "Updating microservice interactions database", cancellable = true) {
+        coroutineToIndicator {
+          getGlobalInteractionsService().updateDatabase(project, ProgressManager.getGlobalProgressIndicator(), force)
+        }
+      }
+    }
+  }
+
   @RequiresBackgroundThread
-  fun updateDatabase(project: Project, progressIndicator: ProgressIndicator, force: Boolean) {
+  fun updateDatabase(project: Project, progressIndicator: ProgressIndicator, force: Boolean = false) {
     if (!force) {
       val lastUpdateTs = Instant.ofEpochMilli(getState().lastUpdateTs)
       val now = Instant.now()
